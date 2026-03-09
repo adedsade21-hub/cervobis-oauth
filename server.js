@@ -123,8 +123,8 @@ const server = http.createServer((req, res) => {
               <div style="font-size: 64px; margin-bottom: 20px;">🧠</div>
               <h1 style="color: #1B1F3B;">C'est connecté !</h1>
               <p style="color: #4A4D68; font-size: 18px;">
-                Cervobis a maintenant accès à ton agenda et tes mails.<br>
-                Retourne sur WhatsApp — ton deuxième cerveau est prêt.
+                Cervobis a maintenant accès à ton agenda et tes mails.<br><br>
+                👉 <b>Retourne sur WhatsApp et envoie "c'est bon"</b> pour que je regarde ta semaine !
               </p>
               <p style="margin-top: 40px; color: #7C7F99;">Tu peux fermer cette page.</p>
             </body>
