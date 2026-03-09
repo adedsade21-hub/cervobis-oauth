@@ -149,6 +149,23 @@ const server = http.createServer((req, res) => {
     return;
   }
 
+  // Check if user has connected - /tokens?user=+33XXXXXXXXX
+  if (parsed.pathname === '/tokens') {
+    const user = parsed.query.user || '';
+    const userDir = path.join(__dirname, 'tokens', user.replace(/[^a-zA-Z0-9+]/g, '_'));
+    const tokenFile = path.join(userDir, 'google-tokens.json');
+    
+    if (fs.existsSync(tokenFile)) {
+      const tokens = JSON.parse(fs.readFileSync(tokenFile, 'utf8'));
+      res.writeHead(200, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ connected: true, tokens }));
+    } else {
+      res.writeHead(200, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ connected: false }));
+    }
+    return;
+  }
+
   // Default
   res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
   res.end(`
