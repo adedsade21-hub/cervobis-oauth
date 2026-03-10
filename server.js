@@ -92,16 +92,22 @@ const server = http.createServer((req, res) => {
           if (WEBHOOK_URL) {
             const webhookData = JSON.stringify({ user, tokens });
             const webhookUrl = new URL(WEBHOOK_URL);
-            const webhookReq = https.request({
+            const httpModule = webhookUrl.protocol === 'https:' ? https : http;
+            const webhookReq = httpModule.request({
               hostname: webhookUrl.hostname,
-              port: webhookUrl.port,
+              port: webhookUrl.port || (webhookUrl.protocol === 'https:' ? 443 : 80),
               path: webhookUrl.pathname,
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json',
                 'Content-Length': Buffer.byteLength(webhookData)
-              }
-            }, () => {});
+              },
+              timeout: 10000
+            }, (whRes) => {
+              let b = '';
+              whRes.on('data', d => b += d);
+              whRes.on('end', () => console.log(`Webhook response: ${whRes.statusCode} ${b}`));
+            });
             webhookReq.on('error', e => console.error('Webhook error:', e.message));
             webhookReq.write(webhookData);
             webhookReq.end();
